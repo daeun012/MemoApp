@@ -3,6 +3,7 @@ import path from 'path';
 
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
+import api from './routes';
 
 const app = express();
 const port = 3000;
@@ -10,8 +11,15 @@ const devPort = 4000;
 
 app.use('/', express.static(path.join(__dirname, './../public')));
 
+app.use('/api', api);
+
 app.get('/hello', (req, res) => {
   return res.send('Hello CodeLab');
+});
+
+app.use(function (err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
 
 app.listen(port, () => {
