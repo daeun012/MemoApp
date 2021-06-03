@@ -1,5 +1,5 @@
 import express from 'express';
-import account from '../models/account';
+import Account from '../models/account';
 
 const router = express.Router();
 
@@ -36,8 +36,10 @@ router.post('/signup', (req, res) => {
       password: req.body.password,
     });
 
-    account.password = account.generateHash(account, password);
+    console.log(account);
 
+    account.password = account.generateHash(account.password);
+    console.log(account.password);
     account.save((err) => {
       if (err) throw err;
       return res.json({ success: true });
@@ -75,6 +77,7 @@ router.post('/signin', (req, res) => {
 
     // Alter session
     let session = req.session;
+    console.log(session);
     session.loginInfo = {
       _id: account._id,
       username: account.username,

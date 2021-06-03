@@ -1,4 +1,4 @@
-import { React, Component } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
@@ -15,6 +15,40 @@ class Auth extends Component {
     nextState[e.target.name] = e.target.value;
     this.setState(nextState);
   };
+  handleLogin = () => {
+    let id = this.state.username;
+    let pw = this.state.password;
+    this.props.onLogin(id, pw).then((success) => {
+      if (!success) {
+        this.setState({
+          password: '',
+        });
+      }
+    });
+  };
+  handleRegister = () => {
+    let id = this.state.username;
+    let pw = this.state.password;
+
+    this.props.onRegister(id, pw).then((result) => {
+      if (!result) {
+        this.setState({
+          username: '',
+          password: '',
+        });
+      }
+    });
+  };
+  handleKeyPress = (e) => {
+    if (e.charCode == 13) {
+      if (this.props.mode) {
+        this.handleLogin();
+      } else {
+        this.handleRegister();
+      }
+    }
+  };
+
   render() {
     const inputBoxes = (
       <div>
@@ -24,7 +58,7 @@ class Auth extends Component {
         </div>
         <div className="input-field col s12">
           <label>Password</label>
-          <input name="password" type="password" className="validate" onChange={this.handleChange} value={this.state.password} />
+          <input name="password" type="password" className="validate" onChange={this.handleChange} value={this.state.password} onKeyPress={this.handleKeyPress} />
         </div>
       </div>
     );
@@ -34,7 +68,9 @@ class Auth extends Component {
         <div className="card-content">
           <div className="row">
             {inputBoxes}
-            <a className="waves-effect waves-light btn  indigo lighten-3">SUBMIT</a>
+            <a className="waves-effect waves-light btn  indigo lighten-3" onClick={this.handleLogin}>
+              SUBMIT
+            </a>
           </div>
         </div>
 
@@ -55,7 +91,9 @@ class Auth extends Component {
       <div className="card-content">
         <div className="row">
           {inputBoxes}
-          <a className="waves-effect waves-light btn">CREATE</a>
+          <a className="waves-effect waves-light btn" onClick={this.handleRegister}>
+            CREATE
+          </a>
         </div>
       </div>
     );

@@ -33,7 +33,7 @@ router.post('/signup', function (req, res) {
   } // Check user existance
 
 
-  Account.findOne({
+  _account["default"].findOne({
     username: req.body.username
   }, function (err, exists) {
     if (err) throw err;
@@ -45,11 +45,13 @@ router.post('/signup', function (req, res) {
       });
     }
 
-    var account = new Account({
+    var account = new _account["default"]({
       username: req.body.username,
       password: req.body.password
     });
-    account.password = account.generateHash(account, password);
+    console.log(account);
+    account.password = account.generateHash(account.password);
+    console.log(account.password);
     account.save(function (err) {
       if (err) throw err;
       return res.json({
@@ -67,7 +69,7 @@ router.post('/signin', function (req, res) {
   } // Find the user by username
 
 
-  Account.findOne({
+  _account["default"].findOne({
     username: req.body.username
   }, function (err, account) {
     if (err) throw err; // Check account existancy
@@ -89,6 +91,7 @@ router.post('/signin', function (req, res) {
 
 
     var session = req.session;
+    console.log(session);
     session.loginInfo = {
       _id: account._id,
       username: account.username
