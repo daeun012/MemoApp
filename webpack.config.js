@@ -1,22 +1,34 @@
-module.exports = {
-  entry: './src/index.js',
+// Webpack이 실행될 때 참조하는 설정 파일
+var path = require('path');
 
+module.exports = {
+  mode: 'production',
+
+  // entry file
+  entry: ['./src/index.js', './src/style.css'],
+
+  // 컴파일 + 번들링된 js 파일이 저장될 경로와 이름 지정
   output: {
-    path: __dirname + '/public/',
+    path: path.resolve(__dirname + '/public/'),
     filename: 'bundle.js',
   },
 
   module: {
-    loaders: [
+    rules: [
       {
-        test: /.js$/,
-        loader: 'babel',
+        test: /\.m?js$/,
         exclude: /node_modules/,
-        query: {
-          cacheDirectory: true,
-          presets: ['es2015', 'react'],
-          plugins: ['react-hot-loader/babel'],
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+          },
         },
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
       },
     ],
   },

@@ -2,11 +2,12 @@ var webpack = require('webpack');
 
 module.exports = {
   /* webpack-dev-server를 콘솔이 아닌 자바스크립트로 실행 할 때, HotReloadMoule을 사용하기 위해선 dev-server 클라이언트와 핫 모듈을 따로 entry에 넣어주어야한다.*/
-
+  mode: 'development',
   entry: [
     './src/index.js',
-    'webpack-dev-server/client?http://0.0.0.0:4000', // 개발서버의 포트가 이 부분에 입력되어야 제대로 작동한다.
+    'webpack-dev-server/client?http://0.0.0.0:9000', // 개발서버의 포트가 이 부분에 입력되어야 제대로 작동한다.
     'webpack/hot/only-dev-server',
+    './src/style.css',
   ],
 
   output: {
@@ -38,19 +39,25 @@ module.exports = {
     },
   },
 
-  plugins: [new webpack.optimize.OccurenceOrderPlugin(), new webpack.HotModuleReplacementPlugin(), new webpack.NoErrorsPlugin()],
+  plugins: [new webpack.HotModuleReplacementPlugin(), new webpack.NoEmitOnErrorsPlugin()],
 
   module: {
-    loaders: [
+    rules: [
       {
-        test: /.js$/,
-        loader: 'babel',
+        test: /\.m?js$/,
         exclude: /node_modules/,
-        query: {
-          cacheDirectory: true,
-          presets: ['es2015', 'react'],
-          plugins: ['react-hot-loader/babel'],
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+            plugins: ['react-hot-loader/babel'],
+          },
         },
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
       },
     ],
   },
