@@ -10,7 +10,7 @@ var path = require('path');
 
 var morgan = require('morgan');
 
-var mongoose = require('./confing/monggose.js');
+var mongoose = require('mongoose');
 
 var session = require('express-session');
 
@@ -20,9 +20,14 @@ var WebpackDevServer = require('webpack-dev-server');
 
 var app = express();
 var port = 3000;
-var devPort = 9000; // mongodb 연결
+var devPort = 9000; // mongodb 연결하기
 
-mongoose();
+var db = mongoose.connection;
+db.on('error', console.error);
+db.once('open', function () {
+  console.log('Connected to mongod server');
+});
+mongoose.connect('mongodb://localhost:27017/memo');
 app.use(morgan('dev'));
 app.use('/', express["static"](path.join(__dirname, './../public')));
 app.use(express.json({
