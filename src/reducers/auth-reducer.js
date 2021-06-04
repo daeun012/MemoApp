@@ -16,10 +16,8 @@ const initialState = {
   },
 };
 
-export default function auth(state, action) {
-  if (typeof state === 'undefined') state = initialState;
-
-  switch (action.type) {
+export default function auth(state = initialState, { type, payload }) {
+  switch (type) {
     /* LOGIN */
     case types.AUTH_LOGIN:
       return update(state, {
@@ -34,20 +32,13 @@ export default function auth(state, action) {
         },
         status: {
           isLoggedIn: { $set: true },
-          currentUser: { $set: action.username },
+          currentUser: { $set: payload.username },
         },
       });
     case types.AUTH_LOGIN_FAILURE:
       return update(state, {
         login: {
           status: { $set: 'FAILURE' },
-        },
-      });
-    case types.AUTH_LOGOUT:
-      return update(state, {
-        status: {
-          isLoggedIn: { $set: false },
-          currentUser: { $set: '' },
         },
       });
     case types.AUTH_REGISTER:
@@ -67,7 +58,14 @@ export default function auth(state, action) {
       return update(state, {
         register: {
           status: { $set: 'FAILURE' },
-          error: { $set: action.error },
+          error: { $set: payload.error },
+        },
+      });
+    case types.AUTH_LOGOUT:
+      return update(state, {
+        status: {
+          isLoggedIn: { $set: false },
+          currentUser: { $set: '' },
         },
       });
     case types.AUTH_GET_STATUS:
@@ -80,7 +78,7 @@ export default function auth(state, action) {
       return update(state, {
         status: {
           valid: { $set: true },
-          currentUser: { $set: action.username },
+          currentUser: { $set: payload.username },
         },
       });
     case types.AUTH_GET_STATUS_FAILURE:

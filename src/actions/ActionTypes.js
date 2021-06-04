@@ -15,3 +15,13 @@ export const AUTH_GET_STATUS_FAILURE = 'AUTH_GET_STATUS_FAILURE';
 
 /* 로그아웃 */
 export const AUTH_LOGOUT = 'AUTH_LOGOUT';
+
+/* 메모 쓰기 */
+export const MEMO_POST = 'MEMO_POST';
+export const MEMO_POST_SUCCESS = 'MEMO_POST_SUCCESS';
+export const MEMO_POST_FAILURE = 'MEMO_POST_FAILURE';
+
+/* 메모 리스트 읽기 */
+export const MEMO_LIST = 'MEMO_LIST';
+export const MEMO_LIST_SUCCESS = 'MEMO_LIST_SUCCESS';
+export const MEMO_LIST_FAILURE = 'MEMO_LIST_FAILURE';

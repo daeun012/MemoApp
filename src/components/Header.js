@@ -7,7 +7,7 @@ class Header extends React.Component {
     const loginButton = (
       <li>
         <Link to="/login">
-          <i className="material-icons">vpn_key</i>
+          <i className="material-icons left">vpn_key</i>Sign In
         </Link>
       </li>
     );
@@ -15,7 +15,7 @@ class Header extends React.Component {
     const logoutButton = (
       <li>
         <a onClick={this.props.onLogout}>
-          <i className="material-icons">lock_open</i>
+          <i className="material-icons left">lock_open</i>Sign Out
         </a>
       </li>
     );

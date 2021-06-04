@@ -68,7 +68,7 @@ class Auth extends Component {
         <div className="card-content">
           <div className="row">
             {inputBoxes}
-            <a className="waves-effect waves-light btn  indigo lighten-3" onClick={this.handleLogin}>
+            <a className="waves-effect waves-light btn  indigo lighten-2" onClick={this.handleLogin}>
               SUBMIT
             </a>
           </div>
@@ -91,7 +91,7 @@ class Auth extends Component {
       <div className="card-content">
         <div className="row">
           {inputBoxes}
-          <a className="waves-effect waves-light btn" onClick={this.handleRegister}>
+          <a className="waves-effect waves-light btn  indigo lighten-2" onClick={this.handleRegister}>
             CREATE
           </a>
         </div>

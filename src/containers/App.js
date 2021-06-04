@@ -2,7 +2,7 @@ import React from 'react';
 import { Home } from './';
 import { Header } from '../components';
 import { connect } from 'react-redux';
-import { getStatusRequest, logoutRequest } from '../actions/auth';
+import { getStatusRequest, logoutRequest } from '../actions/auth-actions';
 
 class App extends React.Component {
   handleLogout = () => {

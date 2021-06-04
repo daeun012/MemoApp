@@ -91,6 +91,7 @@ router.post('/signin', (req, res) => {
 });
 
 router.get('/getinfo', (req, res) => {
+  console.log(req.session.loginInfo);
   if (typeof req.session.loginInfo == 'undefined') {
     return res.status(401).json({
       error: 1,

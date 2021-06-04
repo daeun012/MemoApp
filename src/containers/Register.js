@@ -2,7 +2,7 @@
 import React from 'react';
 import { Auth } from '../components';
 import { connect } from 'react-redux';
-import { registerRequest } from '../actions/auth';
+import { registerRequest } from '../actions/auth-actions';
 
 const Register = () => {
   handleRegister = (id, pw) => {
