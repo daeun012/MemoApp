@@ -26,6 +26,7 @@ export default function user(state = initialState, { type, payload }) {
         },
       });
     case types.USER_LOGIN_SUCCESS:
+      console.log(payload);
       return update(state, {
         login: {
           status: { $set: 'SUCCESS' },

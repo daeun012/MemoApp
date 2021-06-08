@@ -15,6 +15,7 @@ class Auth extends Component {
     nextState[e.target.name] = e.target.value;
     this.setState(nextState);
   };
+
   handleLogin = () => {
     let id = this.state.username;
     let pw = this.state.password;
@@ -26,6 +27,7 @@ class Auth extends Component {
       }
     });
   };
+
   handleRegister = () => {
     let id = this.state.username;
     let pw = this.state.password;

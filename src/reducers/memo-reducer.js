@@ -11,6 +11,10 @@ const initialState = {
     data: [],
     isLast: false,
   },
+  edit: {
+    status: 'INIT',
+    error: -1,
+  },
 };
 
 export default function memo(state = initialState, { type, payload }) {
@@ -68,13 +72,36 @@ export default function memo(state = initialState, { type, payload }) {
           });
         }
       }
-    // loading older or newer memo
-    // to be implemented..
-
     case types.MEMO_LIST_FAILURE:
       return update(state, {
         list: {
           status: { $set: 'FAILURE' },
+        },
+      });
+    case types.MEMO_EDIT:
+      return update(state, {
+        edit: {
+          status: { $set: 'WAITING' },
+          error: { $set: -1 },
+          memo: { $set: undefined },
+        },
+      });
+    case types.MEMO_EDIT_SUCCESS:
+      return update(state, {
+        edit: {
+          status: { $set: 'SUCCESS' },
+        },
+        list: {
+          data: {
+            [payload.index]: { $set: payload.memo },
+          },
+        },
+      });
+    case types.MEMO_EDIT_FAILURE:
+      return update(state, {
+        edit: {
+          status: { $set: 'FAILURE' },
+          error: { $set: payload.error },
         },
       });
     default:

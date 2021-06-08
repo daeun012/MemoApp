@@ -20,7 +20,7 @@ export function loginRequest(username, password) {
     return axios
       .post('/users/login', { username: username, password: password })
       .then((response) => {
-        dispatch({ type: USER_LOGIN_SUCCESS, payload: username });
+        dispatch({ type: USER_LOGIN_SUCCESS, payload: { username } });
       })
       .catch((error) => {
         dispatch({ type: USER_LOGIN_FAILURE });
@@ -38,7 +38,7 @@ export function registerRequest(username, password) {
         dispatch({ type: USER_REGISTER_SUCCESS });
       })
       .catch((error) => {
-        dispatch({ type: USER_REGISTER_FAILURE, payload: error.response.data.code });
+        dispatch({ type: USER_REGISTER_FAILURE, payload: { error: error.response.data.code } });
       });
   };
 }
@@ -59,7 +59,7 @@ export function getStatusRequest() {
     return axios
       .get('/users/getInfo')
       .then((response) => {
-        dispatch({ type: USER_GET_STATUS_SUCCESS, payload: response.data.info.username });
+        dispatch({ type: USER_GET_STATUS_SUCCESS, payload: { username: response.data.info.username } });
       })
       .catch((error) => {
         dispatch({ type: USER_GET_STATUS_FAILURE });

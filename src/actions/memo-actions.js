@@ -1,4 +1,4 @@
-import { MEMO_POST, MEMO_POST_SUCCESS, MEMO_POST_FAILURE, MEMO_LIST, MEMO_LIST_SUCCESS, MEMO_LIST_FAILURE } from './ActionTypes';
+import { MEMO_POST, MEMO_POST_SUCCESS, MEMO_POST_FAILURE, MEMO_LIST, MEMO_LIST_SUCCESS, MEMO_LIST_FAILURE, MEMO_EDIT, MEMO_EDIT_SUCCESS, MEMO_EDIT_FAILURE } from './ActionTypes';
 import axios from 'axios';
 
 /* MEMO POST */
@@ -11,7 +11,7 @@ export function memoPostRequest(contents) {
         dispatch({ type: MEMO_POST_SUCCESS });
       })
       .catch((error) => {
-        dispatch({ type: MEMO_POST_FAILURE, payload: error });
+        dispatch({ type: MEMO_POST_FAILURE, payload: { error: error.response.data.code } });
       });
   };
 }
@@ -46,6 +46,22 @@ export function memoListRequest(isInitial, listType, id, username) {
       })
       .catch((error) => {
         dispatch({ type: MEMO_LIST_FAILURE });
+      });
+  };
+}
+
+/* MEMO EDIT */
+export function memoEditRequest(id, index, contents) {
+  return (dispatch) => {
+    dispatch({ type: MEMO_EDIT });
+
+    return axios
+      .put('/memo/modify/' + id, { contents })
+      .then((response) => {
+        dispatch({ type: MEMO_EDIT_SUCCESS, payload: { index, memo: response.data.memo } });
+      })
+      .catch((error) => {
+        dispatch({ type: MEMO_EDIT_FAILURE, payload: { error: error.response.data.code } });
       });
   };
 }
