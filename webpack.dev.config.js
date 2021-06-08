@@ -1,4 +1,5 @@
-var webpack = require('webpack');
+const webpack = require('webpack');
+const path = require('path');
 
 module.exports = {
   /* webpack-dev-server를 콘솔이 아닌 자바스크립트로 실행 할 때, HotReloadMoule을 사용하기 위해선 dev-server 클라이언트와 핫 모듈을 따로 entry에 넣어주어야한다.*/
@@ -60,5 +61,12 @@ module.exports = {
         use: ['style-loader', 'css-loader'],
       },
     ],
+  },
+
+  resolve: {
+    alias: {
+      Components: path.resolve(__dirname, 'src/components/'),
+      Containers: path.resolve(__dirname, 'src/containers/'),
+    },
   },
 };

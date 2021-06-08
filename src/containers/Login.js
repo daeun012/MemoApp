@@ -1,7 +1,7 @@
 import React from 'react';
-import { Auth } from '../components';
+import { Auth } from 'Components/';
 import { connect } from 'react-redux';
-import { loginRequest } from '../actions/auth-actions';
+import { loginRequest } from '../actions/user-actions';
 
 class Login extends React.Component {
   handleLogin = (id, pw) => {
@@ -36,7 +36,7 @@ class Login extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    status: state.auth.login.status,
+    status: state.user.login.status,
   };
 };
 

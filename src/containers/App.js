@@ -1,8 +1,8 @@
 import React from 'react';
-import { Home } from './';
-import { Header } from '../components';
 import { connect } from 'react-redux';
-import { getStatusRequest, logoutRequest } from '../actions/auth-actions';
+import Home from './Home';
+import Header from 'Components/Header';
+import { getStatusRequest, logoutRequest } from '../actions/user-actions';
 
 class App extends React.Component {
   handleLogout = () => {
@@ -20,7 +20,7 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    // get cookie by name
+    // document.cookie에서 key를 가져오기 위한 함수
     function getCookie(name) {
       var value = '; ' + document.cookie;
       var parts = value.split('; ' + name + '=');
@@ -60,9 +60,7 @@ class App extends React.Component {
     });
   }
   render() {
-    let re = /(login|register)/;
-    let isAuth = re.test(this.props.location.pathname);
-    let HideHeader = this.props.location.pathname === '/login' && '/register' ? null : isAuth ? undefined : <Header isLoggedIn={this.props.status.isLoggedIn} onLogout={this.handleLogout} />;
+    let HideHeader = this.props.location.pathname === '/login' && '/register' ? null : <Header isLoggedIn={this.props.status.isLoggedIn} onLogout={this.handleLogout} />;
     return (
       <div className="App">
         {HideHeader}
@@ -76,7 +74,7 @@ class App extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    status: state.auth.status,
+    status: state.user.status,
   };
 };
 

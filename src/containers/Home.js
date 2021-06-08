@@ -1,9 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Write, MemoList } from '../components';
+import { Write, MemoList } from 'Components/';
 import { memoPostRequest, memoListRequest } from '../actions/memo-actions';
 
 class Home extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loadingState: false,
+    };
+  }
   /* POST MEMO */
   handlePost = (contents) => {
     return this.props.memoPostRequest(contents).then(() => {
@@ -13,11 +19,6 @@ class Home extends React.Component {
           Materialize.toast('Success!', 2000);
         });
       } else {
-        /*
-                  ERROR CODES
-                      1: NOT LOGGED IN
-                      2: EMPTY CONTENTS
-              */
         let $toastContent;
         switch (this.props.postStatus.error) {
           case 1:
@@ -40,6 +41,7 @@ class Home extends React.Component {
       }
     });
   };
+
   loadNewMemo = () => {
     // CANCEL IF THERE IS A PENDING REQUEST
     if (this.props.listStatus === 'WAITING')
@@ -52,24 +54,82 @@ class Home extends React.Component {
 
     return this.props.memoListRequest(false, 'new', this.props.memoData[0]._id);
   };
-  componentWillUnmount() {
-    // STOPS THE loadMemoLoop
-    clearTimeout(this.memoLoaderTimeoutId);
-  }
+
+  loadOldMemo = () => {
+    // 마지막 페이지면 요청 취소
+    if (this.props.isLast) {
+      return new Promise((resolve, reject) => {
+        resolve();
+      });
+    }
+
+    // 아니면 그 뒷 페이지 가져오기
+    let lastId = this.props.memoData[this.props.memoData.length - 1]._id;
+
+    // START REQUEST
+    return this.props.memoListRequest(false, 'old', lastId).then(() => {
+      // IF IT IS LAST PAGE, NOTIFY
+      if (this.props.isLast) {
+        Materialize.toast('You are reading the last page', 2000);
+      }
+    });
+  };
 
   componentDidMount() {
-    // LOAD NEW MEMO EVERY 5 SECONDS
+    // 5초마다 새 메모 로딩
     const loadMemoLoop = () => {
       this.loadNewMemo().then(() => {
         this.memoLoaderTimeoutId = setTimeout(loadMemoLoop, 5000);
       });
     };
 
+    const loadUntilScrollable = () => {
+      // 스크롤바가 생기지 않았다면.
+      if ($('body').height() < $(window).height()) {
+        this.loadOldMemo().then(() => {
+          // DO THIS RECURSIVELY UNLESS IT'S LAST PAGE
+          if (!this.props.isLast) {
+            loadUntilScrollable();
+          }
+        });
+      }
+    };
+
+    // 무한 스크롤링
+    $(window).scroll(() => {
+      // WHEN HEIGHT UNDER SCROLLBOTTOM IS LESS THEN 250
+      if ($(document).height() - $(window).height() - $(window).scrollTop() < 250) {
+        if (!this.state.loadingState) {
+          this.loadOldMemo();
+          this.setState({
+            loadingState: true,
+          });
+        }
+      } else {
+        if (this.state.loadingState) {
+          this.setState({
+            loadingState: false,
+          });
+        }
+      }
+    });
+
     this.props.memoListRequest(true).then(() => {
       // BEGIN NEW MEMO LOADING LOOP
+      loadUntilScrollable();
       loadMemoLoop();
     });
   }
+
+  componentWillUnmount() {
+    // STOPS THE loadMemoLoop
+    console.log('finish');
+    clearTimeout(this.memoLoaderTimeoutId);
+
+    // REMOVE WINDOWS SCROLL LISTENER
+    $(window).unbind();
+  }
+
   render() {
     const write = <Write onPost={this.handlePost} />;
 
@@ -81,13 +141,15 @@ class Home extends React.Component {
     );
   }
 }
+
 const mapStateToProps = (state) => {
   return {
-    isLoggedIn: state.auth.status.isLoggedIn,
+    isLoggedIn: state.user.status.isLoggedIn,
     postStatus: state.memo.post,
-    currentUser: state.auth.status.currentUser,
+    currentUser: state.user.status.currentUser,
     memoData: state.memo.list.data,
     listStatus: state.memo.list.status,
+    isLast: state.memo.list.isLast,
   };
 };
 

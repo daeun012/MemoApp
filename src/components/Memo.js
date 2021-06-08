@@ -42,19 +42,6 @@ class Memo extends React.Component {
         <div className="info">
           <a className="username">{this.props.data.writer}</a> wrote a log · <TimeAgo date={this.props.data.date.created} />
           {ownership ? dropDownMenu : undefined}
-          <div className="option-button">
-            <a className="dropdown-button" id={`dropdown-button-${data._id}`} data-activates={`dropdown-${data._id}`}>
-              <i className="material-icons icon-button">more_vert</i>
-            </a>
-            <ul id={`dropdown-${data._id}`} className="dropdown-content">
-              <li>
-                <a>Edit</a>
-              </li>
-              <li>
-                <a>Remove</a>
-              </li>
-            </ul>
-          </div>
         </div>
         <div className="card-content">{data.contents}</div>
         <div className="footer">

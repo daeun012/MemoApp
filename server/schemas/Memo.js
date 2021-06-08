@@ -1,8 +1,6 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-const Schema = mongoose.Schema;
-
-const Memo = new Schema({
+const MemoSchema = mongoose.Schema({
   writer: String,
   contents: String,
   starred: [String],
@@ -13,4 +11,5 @@ const Memo = new Schema({
   is_edited: { type: Boolean, default: false },
 });
 
-export default mongoose.model('memo', Memo);
+const Memo = mongoose.model('Memo', MemoSchema);
+module.exports = Memo;

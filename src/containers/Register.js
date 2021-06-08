@@ -1,10 +1,10 @@
 // src/containers/Register.js
 import React from 'react';
-import { Auth } from '../components';
+import { Auth } from 'Components';
 import { connect } from 'react-redux';
-import { registerRequest } from '../actions/auth-actions';
+import { registerRequest } from '../actions/user-actions';
 
-const Register = () => {
+class Register extends React.Component {
   handleRegister = (id, pw) => {
     return this.props.registerRequest(id, pw).then(() => {
       if (this.props.status === 'SUCCESS') {
@@ -12,12 +12,6 @@ const Register = () => {
         this.props.history.push('/login');
         return true;
       } else {
-        /*
-                    ERROR CODES:
-                        1: BAD USERNAME
-                        2: BAD PASSWORD
-                        3: USERNAME EXISTS
-                */
         let errorMessage = ['Invalid Username', 'Password is too short', 'Username already exists'];
 
         let $toastContent = $('<span style="color: #FFB4BA">' + errorMessage[this.props.errorCode - 1] + '</span>');
@@ -26,17 +20,19 @@ const Register = () => {
       }
     });
   };
-  return (
-    <div>
-      <Auth mode={false} onRegister={this.handleRegister} />
-    </div>
-  );
-};
+  render() {
+    return (
+      <div>
+        <Auth mode={false} onRegister={this.handleRegister} />
+      </div>
+    );
+  }
+}
 
 const mapStateToProps = (state) => {
   return {
-    status: state.auth.register.status,
-    errorCode: state.auth.register.error,
+    status: state.user.register.status,
+    errorCode: state.user.register.error,
   };
 };
 

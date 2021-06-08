@@ -1,5 +1,5 @@
 // Webpack이 실행될 때 참조하는 설정 파일
-var path = require('path');
+const path = require('path');
 
 module.exports = {
   mode: 'production',
@@ -31,5 +31,11 @@ module.exports = {
         use: ['style-loader', 'css-loader'],
       },
     ],
+  },
+  resolve: {
+    alias: {
+      Components: path.resolve(__dirname, 'src/components/'),
+      Containers: path.resolve(__dirname, 'src/containers/'),
+    },
   },
 };

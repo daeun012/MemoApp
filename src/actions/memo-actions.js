@@ -6,7 +6,7 @@ export function memoPostRequest(contents) {
   return (dispatch) => {
     dispatch({ type: MEMO_POST });
     return axios
-      .post('/api/memo/', { contents })
+      .post('/memo/write/', { contents })
       .then((response) => {
         dispatch({ type: MEMO_POST_SUCCESS });
       })
@@ -28,9 +28,9 @@ export function memoPostRequest(contents) {
 
 export function memoListRequest(isInitial, listType, id, username) {
   return (dispatch) => {
-    // inform memo list API is starting
     dispatch({ type: MEMO_LIST });
-    let url = '/api/memo';
+    let url = `/memo/read`;
+
     if (typeof username === 'undefined') {
       // username not given, load public memo
       url = isInitial ? url : `${url}/${listType}/${id}`;

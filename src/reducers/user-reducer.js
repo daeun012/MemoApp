@@ -16,16 +16,16 @@ const initialState = {
   },
 };
 
-export default function auth(state = initialState, { type, payload }) {
+export default function user(state = initialState, { type, payload }) {
   switch (type) {
     /* LOGIN */
-    case types.AUTH_LOGIN:
+    case types.USER_LOGIN:
       return update(state, {
         login: {
           status: { $set: 'WAITING' },
         },
       });
-    case types.AUTH_LOGIN_SUCCESS:
+    case types.USER_LOGIN_SUCCESS:
       return update(state, {
         login: {
           status: { $set: 'SUCCESS' },
@@ -35,53 +35,53 @@ export default function auth(state = initialState, { type, payload }) {
           currentUser: { $set: payload.username },
         },
       });
-    case types.AUTH_LOGIN_FAILURE:
+    case types.USER_LOGIN_FAILURE:
       return update(state, {
         login: {
           status: { $set: 'FAILURE' },
         },
       });
-    case types.AUTH_REGISTER:
+    case types.USER_REGISTER:
       return update(state, {
         register: {
           status: { $set: 'WAITING' },
           error: { $set: -1 },
         },
       });
-    case types.AUTH_REGISTER_SUCCESS:
+    case types.USER_REGISTER_SUCCESS:
       return update(state, {
         register: {
           status: { $set: 'SUCCESS' },
         },
       });
-    case types.AUTH_REGISTER_FAILURE:
+    case types.USER_REGISTER_FAILURE:
       return update(state, {
         register: {
           status: { $set: 'FAILURE' },
           error: { $set: payload.error },
         },
       });
-    case types.AUTH_LOGOUT:
+    case types.USER_LOGOUT:
       return update(state, {
         status: {
           isLoggedIn: { $set: false },
           currentUser: { $set: '' },
         },
       });
-    case types.AUTH_GET_STATUS:
+    case types.USER_GET_STATUS:
       return update(state, {
         status: {
           isLoggedIn: { $set: true },
         },
       });
-    case types.AUTH_GET_STATUS_SUCCESS:
+    case types.USER_GET_STATUS_SUCCESS:
       return update(state, {
         status: {
           valid: { $set: true },
           currentUser: { $set: payload.username },
         },
       });
-    case types.AUTH_GET_STATUS_FAILURE:
+    case types.USER_GET_STATUS_FAILURE:
       return update(state, {
         status: {
           valid: { $set: false },

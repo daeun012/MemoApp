@@ -31,7 +31,9 @@ class Write extends React.Component {
             <textarea className="materialize-textarea" placeholder="Write down your memo" value={this.state.contents} onChange={this.handleChange}></textarea>
           </div>
           <div className="card-action">
-            <a onClick={this.handlePost}>POST</a>
+            <a style={{ fontWeight: 'bold', color: '#3f51b5' }} onClick={this.handlePost}>
+              POST
+            </a>
           </div>
         </div>
       </div>
