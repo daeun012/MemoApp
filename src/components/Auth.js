@@ -81,7 +81,7 @@ class Auth extends Component {
             <div className="right">
               New Here?
               <Link to="/register" style={{ fontWeight: 'bold', color: '#3f51b5' }}>
-                Create an account
+                {''} Create an account
               </Link>
             </div>
           </div>

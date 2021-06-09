@@ -230,7 +230,7 @@ class Home extends React.Component {
     const wallHeader = (
       <div>
         <div className="container wall-info">
-          <div className="card wall-info blue lighten-2 white-text">
+          <div className="card wall-info indigo lighten-2 white-text">
             <div className="card-content">{this.props.username}</div>
           </div>
         </div>
