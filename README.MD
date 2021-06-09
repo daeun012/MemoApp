@@ -39,17 +39,17 @@ npm run development or npm run start
 
 ### Home
 
-<img src="./images/Home.PNG"  width="550px" height="600px" title="Home" alt="Home"></img>
+<img src="./images/Home.PNG" title="Home" alt="Home"></img>
 
 ### Login & Register
 
-<img src="./images/Login.PNG" width="450px" height="500px" title="Login" alt="Login"></img>
-<img src="./images/Register.PNG" width="450px"  height="500px" title="Register" alt="Register"></img>
+<img src="./images/Login.PNG" width="350px" height="400px" title="Login" alt="Login"></img>
+<img src="./images/Register.PNG" width="350px"  height="400px" title="Register" alt="Register"></img>
 
 ### Search
 
-<img src="./images/Search.PNG"  width="550px" height="600px" title="Search" alt="Search"></img>
+<img src="./images/Search.PNG" title="Search" alt="Search"></img>
 
 ### Wall
 
-<img src="./images/Wall.PNG"  width="550px" height="600px" title="Wall" alt="Wall"></img>
+<img src="./images/Wall.PNG" title="Wall" alt="Wall"></img>
