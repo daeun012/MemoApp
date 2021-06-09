@@ -15,6 +15,14 @@ const initialState = {
     status: 'INIT',
     error: -1,
   },
+  remove: {
+    status: 'INIT',
+    error: -1,
+  },
+  star: {
+    status: 'INIT',
+    error: -1,
+  },
 };
 
 export default function memo(state = initialState, { type, payload }) {
@@ -100,6 +108,54 @@ export default function memo(state = initialState, { type, payload }) {
     case types.MEMO_EDIT_FAILURE:
       return update(state, {
         edit: {
+          status: { $set: 'FAILURE' },
+          error: { $set: payload.error },
+        },
+      });
+    case types.MEMO_REMOVE:
+      return update(state, {
+        remove: {
+          status: { $set: 'WAITING' },
+          error: { $set: -1 },
+        },
+      });
+    case types.MEMO_REMOVE_SUCCESS:
+      return update(state, {
+        remove: {
+          status: { $set: 'SUCCESS' },
+        },
+        list: {
+          data: { $splice: [[payload.index, 1]] },
+        },
+      });
+    case types.MEMO_REMOVE_FAILURE:
+      return update(state, {
+        remove: {
+          status: { $set: 'FAILURE' },
+          error: { $set: payload.error },
+        },
+      });
+    case types.MEMO_STAR:
+      return update(state, {
+        star: {
+          status: { $set: 'WAITING' },
+          error: { $set: -1 },
+        },
+      });
+    case types.MEMO_STAR_SUCCESS:
+      return update(state, {
+        star: {
+          status: { $set: 'SUCCESS' },
+        },
+        list: {
+          data: {
+            [payload.index]: { $set: payload.memo },
+          },
+        },
+      });
+    case types.MEMO_STAR_FAILURE:
+      return update(state, {
+        star: {
           status: { $set: 'FAILURE' },
           error: { $set: payload.error },
         },

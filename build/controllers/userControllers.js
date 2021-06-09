@@ -109,5 +109,26 @@ module.exports = {
     return res.json({
       info: req.session.loginInfo
     });
+  },
+  search: function search(req, res) {
+    res.json([]);
+  },
+  searchUser: function searchUser(req, res) {
+    // SEARCH USERNAMES THAT STARTS WITH GIVEN KEYWORD USING REGEX
+    console.log('username', req.params.username);
+    var re = new RegExp('^' + req.params.username);
+    User.find({
+      username: {
+        $regex: re
+      }
+    }, {
+      _id: false,
+      username: true
+    }).limit(5).sort({
+      username: 1
+    }).exec(function (err, users) {
+      if (err) throw err;
+      res.json(users);
+    });
   }
 };

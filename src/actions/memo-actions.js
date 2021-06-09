@@ -1,4 +1,20 @@
-import { MEMO_POST, MEMO_POST_SUCCESS, MEMO_POST_FAILURE, MEMO_LIST, MEMO_LIST_SUCCESS, MEMO_LIST_FAILURE, MEMO_EDIT, MEMO_EDIT_SUCCESS, MEMO_EDIT_FAILURE } from './ActionTypes';
+import {
+  MEMO_POST,
+  MEMO_POST_SUCCESS,
+  MEMO_POST_FAILURE,
+  MEMO_LIST,
+  MEMO_LIST_SUCCESS,
+  MEMO_LIST_FAILURE,
+  MEMO_EDIT,
+  MEMO_EDIT_SUCCESS,
+  MEMO_EDIT_FAILURE,
+  MEMO_REMOVE,
+  MEMO_REMOVE_SUCCESS,
+  MEMO_REMOVE_FAILURE,
+  MEMO_STAR,
+  MEMO_STAR_SUCCESS,
+  MEMO_STAR_FAILURE,
+} from './ActionTypes';
 import axios from 'axios';
 
 /* MEMO POST */
@@ -34,11 +50,10 @@ export function memoListRequest(isInitial, listType, id, username) {
     if (typeof username === 'undefined') {
       // username not given, load public memo
       url = isInitial ? url : `${url}/${listType}/${id}`;
-      // or url + '/' + listType + '/' +  id
     } else {
-      // load memos of specific user
-      /* to be implemented */
+      url = isInitial ? `${url}/${username}` : `${url}/${username}/${listType}/${id}`;
     }
+
     return axios
       .get(url)
       .then((response) => {
@@ -62,6 +77,37 @@ export function memoEditRequest(id, index, contents) {
       })
       .catch((error) => {
         dispatch({ type: MEMO_EDIT_FAILURE, payload: { error: error.response.data.code } });
+      });
+  };
+}
+
+/* MEMO REMOVE */
+export function memoRemoveRequest(id, index) {
+  return (dispatch) => {
+    dispatch({ type: MEMO_REMOVE });
+
+    return axios
+      .delete('/memo/delete/' + id)
+      .then((response) => {
+        dispatch({ type: MEMO_REMOVE_SUCCESS, payload: index });
+      })
+      .catch((error) => {
+        dispatch({ type: MEMO_REMOVE_FAILURE, payload: { error: error.response.data.code } });
+      });
+  };
+}
+
+export function memoStarRequest(id, index) {
+  return (dispatch) => {
+    dispatch({ type: MEMO_STAR });
+    // TO BE IMPLEMENTED
+    return axios
+      .post('/memo/star/' + id)
+      .then((response) => {
+        dispatch({ type: MEMO_STAR_SUCCESS, payload: { index, memo: response.data.memo } });
+      })
+      .catch((error) => {
+        dispatch({ type: MEMO_STAR_FAILURE, payload: { error: error.response.data.code } });
       });
   };
 }

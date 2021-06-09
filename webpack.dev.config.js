@@ -5,6 +5,7 @@ module.exports = {
   /* webpack-dev-server를 콘솔이 아닌 자바스크립트로 실행 할 때, HotReloadMoule을 사용하기 위해선 dev-server 클라이언트와 핫 모듈을 따로 entry에 넣어주어야한다.*/
   mode: 'development',
   entry: [
+    'babel-polyfill',
     './src/index.js',
     'webpack-dev-server/client?http://0.0.0.0:9000', // 개발서버의 포트가 이 부분에 입력되어야 제대로 작동한다.
     'webpack/hot/only-dev-server',

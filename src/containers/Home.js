@@ -1,13 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { Write, MemoList } from 'Components/';
-import { memoPostRequest, memoListRequest, memoEditRequest } from '../actions/memo-actions';
+import { memoPostRequest, memoListRequest, memoEditRequest, memoRemoveRequest, memoRemoveFromData, memoStarRequest } from '../actions/memo-actions';
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loadingState: false,
+      initiallyLoaded: false,
     };
   }
   /* POST MEMO */
@@ -26,7 +28,7 @@ class Home extends React.Component {
             $toastContent = $('<span style="color: #FFB4BA">You are not logged in</span>');
             Materialize.toast($toastContent, 2000);
             setTimeout(() => {
-              location.reload(false);
+              this.props.location.reload(false);
             }, 2000);
             break;
           case 2:
@@ -59,7 +61,53 @@ class Home extends React.Component {
         // IF NOT LOGGED IN, REFRESH THE PAGE AFTER 2 SECONDS
         if (error === 3) {
           setTimeout(() => {
-            this.location.reload(false);
+            this.props.location.reload(false);
+          }, 2000);
+        }
+      }
+    });
+  };
+
+  handleRemove = (id, index) => {
+    this.props.memoRemoveRequest(id, index).then(() => {
+      if (this.props.removeStatus.status === 'SUCCESS') {
+        // LOAD MORE MEMO IF THERE IS NO SCROLLBAR
+        // 1 SECOND LATER. (ANIMATION TAKES 1SEC)
+        setTimeout(() => {
+          if ($('body').height() < $(window).height()) {
+            this.loadOldMemo();
+          }
+        }, 1000);
+      } else {
+        let errorMessage = ['Something broke', 'You are not logged in', 'That memo does not exist', 'You do not have permission'];
+
+        // NOTIFY ERROR
+        let $toastContent = $('<span style="color: #FFB4BA">' + errorMessage[this.props.removeStatus.error - 1] + '</span>');
+        Materialize.toast($toastContent, 2000);
+
+        // IF NOT LOGGED IN, REFRESH THE PAGE
+        if (this.props.removeStatus.error === 2) {
+          setTimeout(() => {
+            this.props.location.reload(false);
+          }, 2000);
+        }
+      }
+    });
+  };
+
+  handleStar = (id, index) => {
+    this.props.memoStarRequest(id, index).then(() => {
+      if (this.props.starStatus.status !== 'SUCCESS') {
+        let errorMessage = ['Something broke', 'You are not logged in', 'That memo does not exist'];
+
+        // NOTIFY ERROR
+        let $toastContent = $('<span style="color: #FFB4BA">' + errorMessage[this.props.starStatus.error - 1] + '</span>');
+        Materialize.toast($toastContent, 2000);
+
+        // IF NOT LOGGED IN, REFRESH THE PAGE
+        if (this.props.starStatus.error === 2) {
+          setTimeout(() => {
+            this.props.location.reload(false);
           }, 2000);
         }
       }
@@ -74,9 +122,9 @@ class Home extends React.Component {
       });
 
     // IF PAGE IS EMPTY, DO THE INITIAL LOADING
-    if (this.props.memoData.length === 0) return this.props.memoListRequest(true);
+    if (this.props.memoData.length === 0) return this.props.memoListRequest(true, undefined, undefined, this.props.username);
 
-    return this.props.memoListRequest(false, 'new', this.props.memoData[0]._id);
+    return this.props.memoListRequest(false, 'new', this.props.memoData[0]._id, this.props.username);
   };
 
   loadOldMemo = () => {
@@ -91,7 +139,7 @@ class Home extends React.Component {
     let lastId = this.props.memoData[this.props.memoData.length - 1]._id;
 
     // START REQUEST
-    return this.props.memoListRequest(false, 'old', lastId).then(() => {
+    return this.props.memoListRequest(false, 'old', lastId, this.props.username).then(() => {
       // IF IT IS LAST PAGE, NOTIFY
       if (this.props.isLast) {
         Materialize.toast('You are reading the last page', 2000);
@@ -138,10 +186,13 @@ class Home extends React.Component {
       }
     });
 
-    this.props.memoListRequest(true).then(() => {
+    this.props.memoListRequest(true, undefined, undefined, this.props.username).then(() => {
       // BEGIN NEW MEMO LOADING LOOP
-      loadUntilScrollable();
+      setTimeout(loadUntilScrollable, 1000);
       loadMemoLoop();
+      this.setState({
+        initiallyLoaded: true,
+      });
     });
   }
 
@@ -152,19 +203,58 @@ class Home extends React.Component {
 
     // REMOVE WINDOWS SCROLL LISTENER
     $(window).unbind();
+
+    this.setState({
+      initiallyLoaded: false,
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.username !== prevProps.username) {
+      this.componentWillUnmount();
+      this.componentDidMount();
+    }
   }
 
   render() {
     const write = <Write onPost={this.handlePost} />;
 
+    const emptyView = (
+      <div className="container">
+        <div className="empty-page">
+          <b>{this.props.username}</b> isn't registered or hasn't written any memo
+        </div>
+      </div>
+    );
+
+    const wallHeader = (
+      <div>
+        <div className="container wall-info">
+          <div className="card wall-info blue lighten-2 white-text">
+            <div className="card-content">{this.props.username}</div>
+          </div>
+        </div>
+        {this.props.memoData.length === 0 && this.state.initiallyLoaded ? emptyView : undefined}
+      </div>
+    );
+
     return (
       <div className="wrapper">
-        {this.props.isLoggedIn ? write : undefined}
-        <MemoList data={this.props.memoData} currentUser={this.props.currentUser} onEdit={this.handleEdit} />
+        {typeof this.props.username !== 'undefined' ? wallHeader : undefined}
+        {this.props.isLoggedIn && typeof this.props.username === 'undefined' ? write : undefined}
+        <MemoList data={this.props.memoData} currentUser={this.props.currentUser} onEdit={this.handleEdit} onRemove={this.handleRemove} onStar={this.handleStar} />
       </div>
     );
   }
 }
+
+Home.propTypes = {
+  username: PropTypes.string,
+};
+
+Home.defaultProps = {
+  username: undefined,
+};
 
 const mapStateToProps = (state) => {
   return {
@@ -175,6 +265,8 @@ const mapStateToProps = (state) => {
     listStatus: state.memo.list.status,
     isLast: state.memo.list.isLast,
     editStatus: state.memo.edit,
+    removeStatus: state.memo.remove,
+    starStatus: state.memo.star,
   };
 };
 
@@ -188,6 +280,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     memoEditRequest: (id, index, contents) => {
       return dispatch(memoEditRequest(id, index, contents));
+    },
+    memoRemoveRequest: (id, index) => {
+      return dispatch(memoRemoveRequest(id, index));
+    },
+    memoStarRequest: (id, index) => {
+      return dispatch(memoStarRequest(id, index));
     },
   };
 };

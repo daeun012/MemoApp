@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import Home from './Home';
 import Header from 'Components/Header';
 import { getStatusRequest, logoutRequest } from '../actions/user-actions';
+import { searchRequest } from '../actions/search-actions';
 
 class App extends React.Component {
   handleLogout = () => {
@@ -17,6 +18,10 @@ class App extends React.Component {
 
       document.cookie = 'key=' + btoa(JSON.stringify(loginData));
     });
+  };
+
+  handleSearch = (username) => {
+    this.props.searchRequest(username);
   };
 
   componentDidMount() {
@@ -60,7 +65,10 @@ class App extends React.Component {
     });
   }
   render() {
-    let HideHeader = this.props.location.pathname === '/login' && '/register' ? null : <Header isLoggedIn={this.props.status.isLoggedIn} onLogout={this.handleLogout} />;
+    let HideHeader =
+      this.props.location.pathname === '/login' && '/register' ? null : (
+        <Header isLoggedIn={this.props.status.isLoggedIn} onLogout={this.handleLogout} onSearch={this.handleSearch} usernames={this.props.usernames} />
+      );
     return (
       <div className="App">
         {HideHeader}
@@ -75,6 +83,7 @@ class App extends React.Component {
 const mapStateToProps = (state) => {
   return {
     status: state.user.status,
+    usernames: state.search.usernames,
   };
 };
 
@@ -85,6 +94,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     logoutRequest: () => {
       return dispatch(logoutRequest());
+    },
+    searchRequest: (username) => {
+      return dispatch(searchRequest(username));
     },
   };
 };

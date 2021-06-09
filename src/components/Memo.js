@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TimeAgo from 'react-timeago';
+import { Link } from 'react-router-dom';
 
 class Memo extends React.Component {
   constructor(props) {
@@ -15,6 +16,17 @@ class Memo extends React.Component {
     this.setState({
       value: e.target.value,
     });
+  };
+  handleRemove = () => {
+    let id = this.props.data._id;
+    let index = this.props.index;
+    this.props.onRemove(id, index);
+  };
+
+  handleStar = () => {
+    let id = this.props.data._id;
+    let index = this.props.index;
+    this.props.onStar(id, index);
   };
 
   toggleEdit = () => {
@@ -41,6 +53,10 @@ class Memo extends React.Component {
     $('#dropdown-button-' + this.props.data._id).dropdown({
       belowOrigin: true, // Displays dropdown below the button
     });
+    if (this.state.editMode) {
+      // Trigger key up event to the edit input so that it auto-resizes (Materializecss Feature)
+      $(this.input).keyup();
+    }
   }
 
   componentDidMount() {
@@ -49,9 +65,30 @@ class Memo extends React.Component {
     $('#dropdown-button-' + this.props.data._id).dropdown({
       belowOrigin: true, // Displays dropdown below the button
     });
+    if (this.state.editMode) {
+      // Trigger key up event to the edit input so that it auto-resizes (Materializecss Feature)
+      $(this.input).keyup();
+    }
   }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    let current = {
+      props: this.props,
+      state: this.state,
+    };
+
+    let next = {
+      props: nextProps,
+      state: nextState,
+    };
+
+    let update = JSON.stringify(current) !== JSON.stringify(next);
+    return update;
+  }
+
   render() {
     const { data, ownership } = this.props;
+    let starStyle = this.props.data.starred.indexOf(this.props.currentUser) > -1 ? { color: '#ff9980' } : {};
 
     const dropDownMenu = (
       <div className="option-button">
@@ -65,7 +102,9 @@ class Memo extends React.Component {
             </a>
           </li>
           <li>
-            <a style={{ color: '#ef9a9a ' }}>Remove</a>
+            <a onClick={this.handleRemove} style={{ color: '#ef9a9a ' }}>
+              Remove
+            </a>
           </li>
         </ul>
       </div>
@@ -74,17 +113,22 @@ class Memo extends React.Component {
     const memoView = (
       <div className="card">
         <div className="info">
-          <a className="username">{this.props.data.writer}</a> wrote a log · <TimeAgo date={this.props.data.date.created} />
+          <Link to={`/search/${data.writer}`} className="username">
+            {data.writer} {''}
+          </Link>
+          wrote a log · <TimeAgo date={data.date.created} />
           {data.is_edited ? (
             <span style={{ color: '#AAB5BC' }}>
-              · Edited <TimeAgo date={this.props.data.date.edited} live={true} />
+              · Edited <TimeAgo date={data.date.edited} live={true} />
             </span>
           ) : undefined}
           {ownership ? dropDownMenu : undefined}
         </div>
         <div className="card-content">{data.contents}</div>
         <div className="footer">
-          <i className="material-icons log-footer-icon star icon-button">star</i>
+          <i className="material-icons log-footer-icon star icon-button" style={starStyle} onClick={this.handleStar}>
+            star
+          </i>
           <span className="star-count">{data.starred.length}</span>
         </div>
       </div>
@@ -94,7 +138,14 @@ class Memo extends React.Component {
       <div className="write">
         <div className="card">
           <div className="card-content">
-            <textarea className="materialize-textarea" value={this.state.value} onChange={this.handleChange}></textarea>
+            <textarea
+              ref={(ref) => {
+                this.input = ref;
+              }}
+              className="materialize-textarea"
+              value={this.state.value}
+              onChange={this.handleChange}
+            ></textarea>
           </div>
           <div className="card-action">
             <a style={{ fontWeight: 'bold', color: '#3f51b5' }} onClick={this.toggleEdit}>
@@ -113,6 +164,10 @@ Memo.propTypes = {
   ownership: PropTypes.bool,
   onEdit: PropTypes.func,
   index: PropTypes.number,
+  onRemove: PropTypes.func,
+  onStar: PropTypes.func,
+  starStatus: PropTypes.object,
+  currentUser: PropTypes.string,
 };
 
 Memo.defaultProps = {
@@ -131,6 +186,14 @@ Memo.defaultProps = {
   onEdit: (id, index, contents) => {
     console.error('onEdit function not defined');
   },
+  onRemove: (id, index) => {
+    console.error('remove function not defined');
+  },
   index: -1,
+  onStar: (id, index) => {
+    console.error('star function not defined');
+  },
+  starStatus: {},
+  currentUser: '',
 };
 export default Memo;

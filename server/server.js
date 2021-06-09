@@ -45,9 +45,9 @@ app.use('/users', userRoutes.router);
 app.use('/memo', memoRoutes.router);
 
 /* Support client-side routing */
-/* app.get('*', (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, './../public/index.html'));
-}); */
+});
 
 // development 환경일 때 개발서버를 킴
 if (process.env.NODE_ENV == 'development') {

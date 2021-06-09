@@ -30,3 +30,18 @@ export const MEMO_LIST_FAILURE = 'MEMO_LIST_FAILURE';
 export const MEMO_EDIT = 'MEMO_EDIT';
 export const MEMO_EDIT_SUCCESS = 'MEMO_EDIT_SUCCESS';
 export const MEMO_EDIT_FAILURE = 'MEMO_EDIT_FAILURE';
+
+/* 메모 삭제하기 */
+export const MEMO_REMOVE = 'MEMO_REMOVE';
+export const MEMO_REMOVE_SUCCESS = 'MEMO_REMOVE_SUCCESS';
+export const MEMO_REMOVE_FAILURE = 'MEMO_REMOVE_FAILURE';
+
+/* 별 주기 */
+export const MEMO_STAR = 'MEMO_STAR';
+export const MEMO_STAR_SUCCESS = 'MEMO_STAR_SUCCESS';
+export const MEMO_STAR_FAILURE = 'MEMO_STAR_FAILURE';
+
+/* 검색하기 */
+export const SEARCH = 'SEARCH';
+export const SEARCH_SUCCESS = ' SEARCH_SUCCESS';
+export const SEARCH_FAILURE = 'SEARCH_FAILURE';

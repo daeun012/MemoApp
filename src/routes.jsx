@@ -1,8 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import App from 'Containers/App';
-import Login from 'Containers/Login';
-import Register from 'Containers/Register';
+import { App, Login, Register, Wall } from 'Containers';
 
 export default function MainRouter() {
   return (
@@ -12,6 +10,7 @@ export default function MainRouter() {
           <Route exact path="/" component={App} />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
+          <Route path="/wall/:username" component={Wall} />
         </Switch>
       </div>
     </Router>

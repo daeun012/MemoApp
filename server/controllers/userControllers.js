@@ -43,6 +43,7 @@ module.exports = {
       });
     });
   },
+
   register: (req, res) => {
     console.log('hi');
     // Check username format
@@ -99,5 +100,23 @@ module.exports = {
       });
     }
     return res.json({ info: req.session.loginInfo });
+  },
+
+  search: (req, res) => {
+    res.json([]);
+  },
+
+  searchUser: (req, res) => {
+    // SEARCH USERNAMES THAT STARTS WITH GIVEN KEYWORD USING REGEX
+    console.log('username', req.params.username);
+
+    var re = new RegExp('^' + req.params.username);
+    User.find({ username: { $regex: re } }, { _id: false, username: true })
+      .limit(5)
+      .sort({ username: 1 })
+      .exec((err, users) => {
+        if (err) throw err;
+        res.json(users);
+      });
   },
 };
